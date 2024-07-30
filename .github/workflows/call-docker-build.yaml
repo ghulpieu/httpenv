@@ -15,15 +15,15 @@ jobs:
         steps:
 
             - name: Login to Docker Hub
-              uses: docker/login-action@v1
+              uses: docker/login-action@v3.3.0
               with:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
 
             - name: Docker build
-              uses: docker/build-push-action@v2
+              uses: docker/build-push-action@v6.5.0
               with:
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ghulpieu/allhands22:latest,ghulpieu/allhands22:01
+                  tags: ghulpieu/allhands22:latest,ghulpieu/allhands22:02
 
 
