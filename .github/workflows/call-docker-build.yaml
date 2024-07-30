@@ -29,7 +29,7 @@ jobs:
               id: docker_meta
               uses: docker/metadata-action@v5
               with:
-                images: ghulpieu/docker-automation
+                images: ghulpieu/docker-ci-automation
                 flavor: |
                   latest=false
                 tags: |
