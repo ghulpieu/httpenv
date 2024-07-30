@@ -1,6 +1,5 @@
 ---
-name: 03 Add Multi-Platform
-# adding layer to build ARM platforms
+name: 04 Build with Metadata
 
 on:
     push:
@@ -10,7 +9,7 @@ on:
 
 jobs:
     build-image:
-        name: Build Image
+        name: Build Images
         runs-on: ubuntu-latest
         steps:
 
@@ -26,14 +25,33 @@ jobs:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-            - name: Docker build
-              uses: docker/build-push-action@v6.5.0
+            - name: Docker meta
+              id: docker_meta
+              uses: docker/metadata-action@v5
               with:
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ghulpieu/allhands22:latest,ghulpieu/allhands22:03
+                images: ghulpieu/docker-automation
+                flavor: |
+                  latest=false
+                tags: |
+                  type=raw,value=04
+                  type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
+                  type=ref,event=pr
+                  type=ref,event=branch
+                  type=semver,pattern={{version}}
+
+            - name: Docker build
+              uses: docker/build-push-action@v6
+              with:
+                  push: true
+                  tags: ${{ steps.docker_meta.outputs.tags }}
+                  labels: ${{ steps.docker_meta.outputs.tags }}
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
-                  platforms: linux/amd64,linux/arm64,linux/arm/v7
+                  # comma separated list of what OS and architectures to build for (in parallel)
+                  # default is linux/amd64 (the OS of the runner) but you can add more
+                  # adding linux/arm64 is recommended for Apple Silicon, Raspberry Pi, AWS Graviton, etc.
+                  # linux/arm/v7 is for 32-bit ARM devices like Raspberry Pi 2/3
+                  platforms: linux/amd64,linux/arm64
 
 
 
