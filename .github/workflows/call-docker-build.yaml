@@ -27,6 +27,6 @@ jobs:
                   push: ${{ github.event_name != 'pull_request' }}
                   tags: ghulpieu/allhands22:latest,ghulpieu/allhands22:02
                   cache-from: type=gha
-                  cache-to: type=gha,mode-max
+                  cache-to: type=gha,mode=max
 
 
