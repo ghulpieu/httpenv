@@ -1,5 +1,5 @@
 ---
-name: 09 Build and Integration Test
+name: 08 Build and Unit Test
 
 on:
     push:
@@ -40,13 +40,9 @@ jobs:
                 cache-to: type=gha,mode=max
                 platforms: linux/amd64
 
-              # for more advanced tests, use docker compose with `depends_on`
-                # NOTE: GHA and other CIs can also run dependency containers on their own
-                # GHA `services:` can do this if your're trying to avoid docker compose
-            - name: Test healthcheck in Docker Compose
+            - name: Unit Testing in Docker
               run: |
-                export TESTING_IMAGE="${{ github.run_id }}"
-                docker compose -f docker-compose.test.yml up --exit-code-from sut
+                docker run --rm ${{ github.run_id }} echo "run test commands here"
 
             - name: Docker Metadata for Final Image Build
               id: docker_meta
@@ -56,7 +52,7 @@ jobs:
                 flavor: |
                   latest=false
                 tags: |
-                  type=raw,value=09
+                  type=raw,value=08
                   # Comment these out on all but 04-add-metadata.yaml to avoid overwriting image tags
                   # type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
                   # type=ref,event=pr
